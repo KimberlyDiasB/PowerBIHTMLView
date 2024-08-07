@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alternar Dashboards</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+        }
+        header, footer {
+            background-color: #003366;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .logo-container img {
+            height: 40px;
+        }
+        nav {
+            background-color: #002244;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80%;
+            max-width: 600px;
+            margin: 20px 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        #dashboard-container {
+            width: 100%;
+            height: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        #dashboard-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+        footer {
+            margin-top: auto;
+        }
+        .fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .fullscreen img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo">
+        </div>
+    </header>
+
+    <nav id="nav-menu">
+        <a href="#" onclick="startPlayer(event)">Iniciar Player</a>
+        <a href="#" onclick="redirectToReport(event)">Relatório Completo</a>
+    </nav>
+
+    <div class="container">
+        <div id="dashboard-container">
+        </div>
+    </div>
+
+    <div id="fullscreen-container" class="hidden fullscreen">
+        <img id="fullscreen-image"/>
+        <button onclick="closeFullscreen()">Fechar</button>
+    </div>
+
+    <footer>
+        <p>© 2024 Rede D'or Hospital São Luiz</p>
+    </footer>
+
+    <script>
+        const reportImageSrc = 'relatorioCompleto.png';
+        const images = [
+            'dash1.png',
+            'dash2.png'
+        ];
+
+        let currentIndex = 0;
+        let playerInterval;
+
+        function loadImage(src) {
+            const container = document.getElementById('dashboard-container');
+            container.innerHTML = '';
+
+            const img = document.createElement('img');
+            img.src = src;
+
+            container.appendChild(img);
+        }
+
+        function startPlayer(event) {
+            event.preventDefault();
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('fullscreen-container').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+
+            loadImage(images[currentIndex]);
+
+            playerInterval = setInterval(() => {
+                currentIndex = (currentIndex + 1) % images.length;
+                loadImage(images[currentIndex]);
+            }, 5000);
+        }
+
+        function stopPlayer() {
+            if (playerInterval) {
+                clearInterval(playerInterval);
+                playerInterval = null;
+            }
+        }
+
+        function redirectToReport(event) {
+            event.preventDefault();
+            document.getElementById('nav-menu').classList.add('hidden');
+            document.getElementById('dashboard-container').classList.add('hidden');
+
+            const fullscreenContainer = document.getElementById('fullscreen-container');
+            const fullscreenImage = document.getElementById('fullscreen-image');
+            fullscreenImage.src = reportImageSrc;
+            fullscreenContainer.classList.remove('hidden');
+        }
+
+        function closeFullscreen() {
+            document.getElementById('fullscreen-container').classList.add('hidden');
+            document.getElementById('nav-menu').classList.remove('hidden');
+            document.getElementById('dashboard-container').classList.remove('hidden');
+            document.getElementById('fullscreen-image').src = '';
+        }
+    </script>
+</body>
+</html>
